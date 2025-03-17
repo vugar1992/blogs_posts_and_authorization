@@ -1,7 +1,7 @@
 import {Router, Request, Response} from "express";
 import {db} from "../db/db";
 import {blogsRepository} from "../repository/blogs-repository";
-import {createValidator, inputValidationResultMiddleware} from "../validator/blogs-validator";
+import {authorizationMiddleware, createValidator, inputValidationResultMiddleware} from "../validator/blogs-validator";
 
 
 export const blogsRouter:Router = Router({})
@@ -17,6 +17,7 @@ blogsRouter.get('/', (req:Request, res:Response):void => {
 })
 
 blogsRouter.post('/',
+    authorizationMiddleware,
     createValidator,
     inputValidationResultMiddleware,
     (req:Request, res:Response) :void=> {
@@ -32,3 +33,59 @@ blogsRouter.post('/',
         // res.status(201).json(blog)
         res.sendStatus(201)
 })
+
+blogsRouter.get('/:id',
+    (req:Request, res:Response):void => {
+        const index = blogsRepository.getBlogById(req.params.id)
+
+        if (index === -1) {
+            res.sendStatus(404)
+            return
+        }
+
+        const blog = db.blogs[index]
+
+        res.status(200).json(blog)
+})
+
+blogsRouter.put('/:id',
+    authorizationMiddleware,
+    createValidator,
+    inputValidationResultMiddleware,
+    (req:Request, res:Response) :void => {
+        const index = blogsRepository.getBlogById(req.params.id)
+
+        if(index === -1) {
+            res.sendStatus(404)
+            return
+        }
+
+        const blog = db.blogs[index];
+
+        const { name, description, websiteUrl } = req.body
+
+        db.blogs[index] = {...blog,
+            name,
+            description,
+            websiteUrl
+        }
+
+        res.sendStatus(204)
+
+    })
+
+
+blogsRouter.delete('/:id',
+    authorizationMiddleware,
+    (req:Request, res:Response) :void => {
+        const index = blogsRepository.getBlogById(req.params.id)
+
+        if(index === -1) {
+            res.sendStatus(404)
+            return
+        }
+
+        db.blogs.splice(index,1)
+
+        res.sendStatus(204)
+    })

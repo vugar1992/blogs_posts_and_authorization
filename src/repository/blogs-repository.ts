@@ -19,5 +19,12 @@ export const blogsRepository = {
 
         db.blogs.push(blog)
         // return blog
+    },
+
+    getBlogById(id:string):number {
+        const findIndex:number = db.blogs.findIndex(blog=> blog.id === id)
+
+        return findIndex
     }
+
 }
