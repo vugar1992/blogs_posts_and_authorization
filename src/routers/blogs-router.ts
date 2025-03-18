@@ -5,15 +5,17 @@ import {authorizationMiddleware, createValidator, inputValidationResultMiddlewar
 
 
 export const blogsRouter:Router = Router({})
+export const deleteAllBlogsRouter:Router = Router({})
 
-export type CreateBlogsInput = {
+export type BlogsInput = {
     name: string,
     description: string,
     websiteUrl: string
 }
 
 blogsRouter.get('/', (req:Request, res:Response):void => {
-    res.status(200).json(db.blogs)
+    const allBlogs = blogsRepository.getAllBlogs()
+    res.status(200).json(allBlogs)
 })
 
 blogsRouter.post('/',
@@ -22,28 +24,26 @@ blogsRouter.post('/',
     inputValidationResultMiddleware,
     (req:Request, res:Response) :void=> {
 
-        const createData:CreateBlogsInput = {
+        const createData:BlogsInput = {
             name: req.body.name,
             description: req.body.description,
             websiteUrl: req.body.websiteUrl
         }
 
-        const blog = blogsRepository.createNewBlog(createData)
-        // db.blogs.push(blog)
-        // res.status(201).json(blog)
+        blogsRepository.createNewBlog(createData)
+
         res.sendStatus(201)
 })
 
 blogsRouter.get('/:id',
     (req:Request, res:Response):void => {
-        const index = blogsRepository.getBlogById(req.params.id)
 
-        if (index === -1) {
+        const blog = blogsRepository.getBlogById(req.params.id)
+
+        if (blog === undefined) {
             res.sendStatus(404)
             return
         }
-
-        const blog = db.blogs[index]
 
         res.status(200).json(blog)
 })
@@ -53,22 +53,21 @@ blogsRouter.put('/:id',
     createValidator,
     inputValidationResultMiddleware,
     (req:Request, res:Response) :void => {
-        const index = blogsRepository.getBlogById(req.params.id)
 
-        if(index === -1) {
+        const updateData:BlogsInput = {
+            name: req.body.name,
+            description: req.body.description,
+            websiteUrl: req.body.websiteUrl
+        }
+
+        const blog = blogsRepository.getBlogById(req.params.id)
+
+        if (blog === undefined) {
             res.sendStatus(404)
             return
         }
 
-        const blog = db.blogs[index];
-
-        const { name, description, websiteUrl } = req.body
-
-        db.blogs[index] = {...blog,
-            name,
-            description,
-            websiteUrl
-        }
+        blogsRepository.updateBlog(updateData, req.params.id)
 
         res.sendStatus(204)
 
@@ -78,14 +77,20 @@ blogsRouter.put('/:id',
 blogsRouter.delete('/:id',
     authorizationMiddleware,
     (req:Request, res:Response) :void => {
-        const index = blogsRepository.getBlogById(req.params.id)
 
-        if(index === -1) {
+        const blog = blogsRepository.getBlogById(req.params.id)
+
+        if (blog === undefined) {
             res.sendStatus(404)
             return
         }
 
-        db.blogs.splice(index,1)
+        blogsRepository.deleteBlog(req.params.id)
 
         res.sendStatus(204)
     })
+
+
+deleteAllBlogsRouter.delete('/all-data', () :void => {
+    blogsRepository.deleteAllBD()
+})
