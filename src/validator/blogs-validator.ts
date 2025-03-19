@@ -1,4 +1,4 @@
-import {body, FieldValidationError, ValidationError, validationResult} from "express-validator";
+import {body, FieldValidationError, ValidationChain, ValidationError, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 
 type ValidationErrorType = {
@@ -6,7 +6,7 @@ type ValidationErrorType = {
     field: string,
 }
 
-const nameValidation = body("name")
+const nameValidation:ValidationChain = body("name")
     .isString()
     .withMessage("Name must be a string")
     .trim()
@@ -14,14 +14,14 @@ const nameValidation = body("name")
     .withMessage("The value length must be between 1 to 15")
 
 
-const descriptionValidation = body("description")
+const descriptionValidation:ValidationChain = body("description")
     .isString()
     .withMessage("Description must be a string")
     .trim()
     .isLength({min: 1, max: 500})
     .withMessage("The value length must be between 1 to 500")
 
-const websiteUrlValidation = body("websiteUrl")
+const websiteUrlValidation:ValidationChain = body("websiteUrl")
     .isString()
     .withMessage("Website must be a string")
     .trim()
@@ -40,7 +40,7 @@ const formatErrors = (error:ValidationError):ValidationErrorType => {
 }
 
 export const inputValidationResultMiddleware = (req:Request, res:Response, next:NextFunction) :void=> {
-    const errors = validationResult(req)
+    const errors:ValidationErrorType[] = validationResult(req)
         .formatWith(formatErrors)
         .array({onlyFirstError: true})
 
@@ -54,7 +54,7 @@ export const inputValidationResultMiddleware = (req:Request, res:Response, next:
 }
 
 export const authorizationMiddleware = (req:Request, res:Response, next:NextFunction):void=> {
-    const auth = req.headers["authorization"] //отличие req.header("authorization")
+    const auth:string | null = req.headers["authorization"] ?? null
 
     if(!auth) {
         res.sendStatus(401)

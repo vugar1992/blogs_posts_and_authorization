@@ -1,11 +1,11 @@
 import {db} from "../db/db";
-import {DBBlogsType} from "../db/DBBlogsType";
+import {IdbBlogs} from "../db/DBBlogsType";
 import {BlogsInput} from "../routers/blogs-router";
 
 
 export const blogsRepository = {
 
-    getAllBlogs() {
+    getAllBlogs():IdbBlogs[] {
         return db.blogs
     },
 
@@ -13,7 +13,7 @@ export const blogsRepository = {
 
         const { name, description, websiteUrl } = data;
 
-        const blog:DBBlogsType = {
+        const blog:IdbBlogs = {
             id: new Date().getTime().toString(),
             name,
             description,
@@ -23,16 +23,16 @@ export const blogsRepository = {
         db.blogs.push(blog)
     },
 
-    getBlogById(id:string):DBBlogsType | undefined {
-        const index:number = db.blogs.findIndex(blog=> blog.id === id)
+    getBlogById(id:string):IdbBlogs | null {
+        const index:number = db.blogs.findIndex((blog:IdbBlogs):boolean => blog.id === id)
 
-        return db.blogs[index]
+        return db.blogs[index] ?? null
     },
 
     updateBlog(newData:BlogsInput, id:string):void {
         const { name, description, websiteUrl } = newData
 
-        const index = db.blogs.findIndex(blog=> blog.id === id);
+        const index:number = db.blogs.findIndex((blog:IdbBlogs):boolean=> blog.id === id);
 
         db.blogs[index] = {
             ...db.blogs[index],
@@ -44,11 +44,12 @@ export const blogsRepository = {
     },
 
     deleteBlog(id:string):void {
-        db.blogs = db.blogs.filter(blog=> blog.id !== id)
+        db.blogs = db.blogs.filter((blog:IdbBlogs):boolean => blog.id !== id)
     },
 
-    deleteAllBD() {
+    deleteAllBD():IdbBlogs[] {
         db.blogs = [];
+        return db.blogs
     }
 
 }

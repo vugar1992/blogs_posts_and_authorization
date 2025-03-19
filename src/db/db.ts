@@ -1,7 +1,7 @@
-import {DBBlogsType} from "./DBBlogsType";
+import {IdbBlogs} from "./DBBlogsType";
 
 type BlogsType = {
-    blogs: DBBlogsType[];
+    blogs: IdbBlogs[];
 }
 
 export const db:BlogsType = {

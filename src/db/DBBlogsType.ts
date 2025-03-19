@@ -1,4 +1,4 @@
-export interface DBBlogsType {
+export interface IdbBlogs {
     id: string,
     name: string,
     description: string,

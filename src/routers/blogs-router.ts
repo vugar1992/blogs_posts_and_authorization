@@ -2,6 +2,7 @@ import {Router, Request, Response} from "express";
 import {db} from "../db/db";
 import {blogsRepository} from "../repository/blogs-repository";
 import {authorizationMiddleware, createValidator, inputValidationResultMiddleware} from "../validator/blogs-validator";
+import {IdbBlogs} from "../db/DBBlogsType";
 
 
 export const blogsRouter:Router = Router({})
@@ -14,7 +15,7 @@ export type BlogsInput = {
 }
 
 blogsRouter.get('/', (req:Request, res:Response):void => {
-    const allBlogs = blogsRepository.getAllBlogs()
+    const allBlogs:IdbBlogs[] = blogsRepository.getAllBlogs()
     res.status(200).json(allBlogs)
 })
 
@@ -38,9 +39,9 @@ blogsRouter.post('/',
 blogsRouter.get('/:id',
     (req:Request, res:Response):void => {
 
-        const blog = blogsRepository.getBlogById(req.params.id)
+        const blog:IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
 
-        if (blog === undefined) {
+        if (!blog) {
             res.sendStatus(404)
             return
         }
@@ -60,9 +61,9 @@ blogsRouter.put('/:id',
             websiteUrl: req.body.websiteUrl
         }
 
-        const blog = blogsRepository.getBlogById(req.params.id)
+        const blog:IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
 
-        if (blog === undefined) {
+        if (!blog) {
             res.sendStatus(404)
             return
         }
@@ -78,9 +79,9 @@ blogsRouter.delete('/:id',
     authorizationMiddleware,
     (req:Request, res:Response) :void => {
 
-        const blog = blogsRepository.getBlogById(req.params.id)
+        const blog:IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
 
-        if (blog === undefined) {
+        if (!blog) {
             res.sendStatus(404)
             return
         }
@@ -91,6 +92,7 @@ blogsRouter.delete('/:id',
     })
 
 
-deleteAllBlogsRouter.delete('/all-data', () :void => {
+deleteAllBlogsRouter.delete('/all-data', (req:Request, res:Response) :void => {
     blogsRepository.deleteAllBD()
+    res.sendStatus(204)
 })
