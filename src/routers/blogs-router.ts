@@ -2,8 +2,8 @@ import {Router, Request, Response} from "express";
 import {blogsRepository} from "../repository/blogs-repository";
 import {createValidator} from "../validator/blogs-validator";
 import {IdbBlogs} from "../db/DBBlogsType";
-import {authorizationMiddleware} from "../Middleware/basic-auth";
-import {inputValidationResultMiddleware} from "../Middleware/errors-type";
+import {authorizationMiddleware} from "../middleware/basic-auth";
+import {inputValidationResultMiddleware} from "../middleware/errors-type";
 
 
 export const blogsRouter: Router = Router({})

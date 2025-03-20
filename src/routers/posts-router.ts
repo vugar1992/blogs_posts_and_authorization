@@ -4,8 +4,8 @@ import {createValidation} from "../validator/posts-validator";
 import {IdbBlogs} from "../db/DBBlogsType";
 import {blogsRepository} from "../repository/blogs-repository";
 import {IdbPosts} from "../db/IdbPosts";
-import {authorizationMiddleware} from "../Middleware/basic-auth";
-import {inputValidationResultMiddleware} from "../Middleware/errors-type";
+import {authorizationMiddleware} from "../middleware/basic-auth";
+import {inputValidationResultMiddleware} from "../middleware/errors-type";
 
 export const postRouter: Router = Router({});
 
