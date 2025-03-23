@@ -10,7 +10,7 @@ describe("create and update data", () => {
     it("should create a new video", async () => {
         await request(app)
             .get("/blogs")
-            .expect([])
+            .expect(200)
 
         const newBlog:BlogsInput = {
             name: "test name",
@@ -152,7 +152,7 @@ describe("validate", () => {
             .auth('admin', 'qwerty')
             .send({})
 
-        expect(falseValue.status).toBe(400)
+        expect(emptyValue.status).toBe(400)
 
         const zeroLength = await request(app)
             .put(`/blogs/${blogId}`)

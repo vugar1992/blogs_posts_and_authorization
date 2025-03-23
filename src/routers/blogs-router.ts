@@ -32,9 +32,9 @@ blogsRouter.post('/',
             websiteUrl: req.body.websiteUrl
         }
 
-        blogsRepository.createNewBlog(createData)
+        const blog = blogsRepository.createNewBlog(createData)
 
-        res.sendStatus(201)
+        res.status(201).json(blog)
     })
 
 blogsRouter.get('/:id',

@@ -8,6 +8,7 @@ import {authorizationMiddleware} from "../middleware/basic-auth";
 import {inputValidationResultMiddleware} from "../middleware/errors-type";
 
 export const postRouter: Router = Router({});
+export const deleteAllPostsRouter: Router = Router({})
 
 export type ReqInputType = {
     title: string;
@@ -41,9 +42,9 @@ postRouter.post(
             return
         }
 
-        postsRepository.createNewPosts(createData);
+        const post = postsRepository.createNewPosts(createData);
 
-        res.sendStatus(201);
+        res.status(201).json(post);
     }
 );
 
@@ -69,9 +70,10 @@ postRouter.put("/:id",
             blogId: req.body.blogId,
         };
 
-        const post: IdbBlogs | null = blogsRepository.getBlogById(updateData.blogId) ?? null
+        const blog: IdbBlogs | null = blogsRepository.getBlogById(updateData.blogId) ?? null
+        const post: IdbPosts | null = postsRepository.getPostById(req.params.id);
 
-        if (!post) {
+        if (!blog || !post) {
             res.sendStatus(404)
             return
         }
@@ -87,7 +89,7 @@ postRouter.delete("/:id",
 
         const postId: IdbPosts | null = postsRepository.getPostById(req.params.id);
 
-        if(!postId) {
+        if (!postId) {
             res.sendStatus(404)
             return
         }
@@ -95,3 +97,7 @@ postRouter.delete("/:id",
         postsRepository.deletePost(req.params.id)
         res.sendStatus(204)
     })
+
+deleteAllPostsRouter.delete('/all-data', (req: Request, res: Response) => {
+    postsRepository.deleteAllPosts()
+})

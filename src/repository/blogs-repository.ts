@@ -9,7 +9,7 @@ export const blogsRepository = {
         return db.blogs
     },
 
-    createNewBlog(data: BlogsInput): void {
+    createNewBlog(data: BlogsInput): IdbBlogs {
 
         const {name, description, websiteUrl} = data;
 
@@ -21,6 +21,7 @@ export const blogsRepository = {
         }
 
         db.blogs.push(blog)
+        return blog;
     },
 
     getBlogById(id: string): IdbBlogs | null {
@@ -47,9 +48,8 @@ export const blogsRepository = {
         db.blogs = db.blogs.filter((blog: IdbBlogs): boolean => blog.id !== id)
     },
 
-    deleteAllBD(): IdbBlogs[] {
+    deleteAllBD() {
         db.blogs = [];
-        return db.blogs
     }
 
 }

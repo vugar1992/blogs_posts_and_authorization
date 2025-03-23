@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ValidationError, validationResult} from "express-validator";
+import {FieldValidationError, ValidationError, validationResult} from "express-validator";
 
 type ValidationErrorType = {
     message: string;
@@ -7,11 +7,11 @@ type ValidationErrorType = {
 };
 
 const formatErrors = (error:ValidationError): ValidationErrorType => {
-    const expressError = error as unknown as ValidationError;
+    const expressError = error as unknown as FieldValidationError;
 
     return {
         message: expressError.msg,
-        field: expressError.type,
+        field: expressError.path
     }
 }
 

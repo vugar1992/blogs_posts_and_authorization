@@ -8,24 +8,28 @@ export const postsRepository = {
         return db.posts;
     },
 
-    createNewPosts(reqData: ReqInputType): void {
+    createNewPosts(reqData: ReqInputType): IdbPosts | null {
         const {title, shortDescription, content, blogId} = reqData;
 
 
         const findName: IdbBlogs | null = db.blogs.find(blog => blogId === blog.id) ?? null;
 
-        if (findName) {
-            const newPost: IdbPosts = {
-                id: new Date().getTime().toString(),
-                title,
-                shortDescription,
-                content,
-                blogId,
-                blogName: findName.name,
-            };
-
-            db.posts.push(newPost);
+        if (!findName) {
+            return null
         }
+
+        const newPost: IdbPosts = {
+            id: new Date().getTime().toString(),
+            title,
+            shortDescription,
+            content,
+            blogId,
+            blogName: findName.name,
+        };
+
+        db.posts.push(newPost);
+
+        return newPost;
     },
 
     getPostById(id: string): IdbPosts | null {
@@ -40,6 +44,7 @@ export const postsRepository = {
         const blog: IdbBlogs | null = db.blogs.find((blog: IdbBlogs): boolean => blog.id === blogId) ?? null;
 
         const index: number = db.posts.findIndex((post: IdbPosts): boolean => post.id === id);
+        // const post = db.posts[index]
 
         if (blog) {
             db.posts[index] = {
@@ -55,6 +60,10 @@ export const postsRepository = {
 
     deletePost(id: string): void {
         db.posts = db.posts.filter((post: IdbPosts): boolean => post.id !== id);
-    }
+    },
 
+
+    deleteAllPosts() {
+        db.posts = [];
+    }
 };
