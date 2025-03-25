@@ -1,5 +1,7 @@
+import {ObjectId} from "mongodb";
+
 export interface IdbBlogs {
-    id: string,
+    _id: ObjectId,
     name: string,
     description: string,
     websiteUrl: string,

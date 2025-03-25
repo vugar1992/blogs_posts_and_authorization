@@ -1,36 +1,40 @@
 import {db} from "../db/db";
 import {IdbBlogs} from "../db/DBBlogsType";
 import {BlogsInput} from "../routers/blogs-router";
+import {blogsCollection} from "../db/mongoDB"
+import {ObjectId} from "mongodb"
 
 
 export const blogsRepository = {
 
-    getAllBlogs(): IdbBlogs[] {
-        return db.blogs
+    async getAllBlogs(): Promise<IdbBlogs[]> {
+        return blogsCollection.find({}).toArray()
     },
 
-    createNewBlog(data: BlogsInput): IdbBlogs {
+    async createNewBlog(data: BlogsInput): Promise<ObjectId> {
 
         const {name, description, websiteUrl} = data;
+        const _id:ObjectId = new ObjectId();
 
         const blog: IdbBlogs = {
-            id: new Date().getTime().toString(),
+            _id,
             name,
             description,
             websiteUrl
         }
 
-        db.blogs.push(blog)
-        return blog;
+        // db.blogs.push(blog)
+        const db = await blogsCollection.insertOne(blog);
+        return db.insertedId;
     },
 
-    getBlogById(id: string): IdbBlogs | null {
+    async getBlogById(id: string): Promise<IdbBlogs | null> {
         const index: number = db.blogs.findIndex((blog: IdbBlogs): boolean => blog.id === id)
 
         return db.blogs[index] ?? null
     },
 
-    updateBlog(newData: BlogsInput, id: string): void {
+    async updateBlog(newData: BlogsInput, id: string): Promise<void> {
         const {name, description, websiteUrl} = newData
 
         const index: number = db.blogs.findIndex((blog: IdbBlogs): boolean => blog.id === id);
@@ -44,11 +48,11 @@ export const blogsRepository = {
 
     },
 
-    deleteBlog(id: string): void {
+    async deleteBlog(id: string): Promise<void> {
         db.blogs = db.blogs.filter((blog: IdbBlogs): boolean => blog.id !== id)
     },
 
-    deleteAllBD() {
+    async deleteAllBD() {
         db.blogs = [];
     }
 

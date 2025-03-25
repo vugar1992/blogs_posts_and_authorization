@@ -15,8 +15,8 @@ export type BlogsInput = {
     websiteUrl: string
 }
 
-blogsRouter.get('/', (req: Request, res: Response): void => {
-    const allBlogs: IdbBlogs[] = blogsRepository.getAllBlogs()
+blogsRouter.get('/', async (req: Request, res: Response): Promise<void> => {
+    const allBlogs: IdbBlogs[] = await blogsRepository.getAllBlogs()
     res.status(200).json(allBlogs)
 })
 
@@ -24,7 +24,7 @@ blogsRouter.post('/',
     authorizationMiddleware,
     createValidator,
     inputValidationResultMiddleware,
-    (req: Request, res: Response): void => {
+    async (req: Request, res: Response): Promise<void> => {
 
         const createData: BlogsInput = {
             name: req.body.name,
@@ -32,15 +32,15 @@ blogsRouter.post('/',
             websiteUrl: req.body.websiteUrl
         }
 
-        const blog = blogsRepository.createNewBlog(createData)
+        const blog = await blogsRepository.createNewBlog(createData)
 
         res.status(201).json(blog)
     })
 
 blogsRouter.get('/:id',
-    (req: Request, res: Response): void => {
+    async (req: Request, res: Response): Promise<void> => {
 
-        const blog: IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
 
         if (!blog) {
             res.sendStatus(404)
@@ -54,7 +54,7 @@ blogsRouter.put('/:id',
     authorizationMiddleware,
     createValidator,
     inputValidationResultMiddleware,
-    (req: Request, res: Response): void => {
+    async (req: Request, res: Response): Promise<void> => {
 
         const updateData: BlogsInput = {
             name: req.body.name,
@@ -62,14 +62,14 @@ blogsRouter.put('/:id',
             websiteUrl: req.body.websiteUrl
         }
 
-        const blog: IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
 
         if (!blog) {
             res.sendStatus(404)
             return
         }
 
-        blogsRepository.updateBlog(updateData, req.params.id)
+        await blogsRepository.updateBlog(updateData, req.params.id)
 
         res.sendStatus(204)
 
@@ -78,22 +78,22 @@ blogsRouter.put('/:id',
 
 blogsRouter.delete('/:id',
     authorizationMiddleware,
-    (req: Request, res: Response): void => {
+    async (req: Request, res: Response): Promise<void> => {
 
-        const blog: IdbBlogs | null = blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
 
         if (!blog) {
             res.sendStatus(404)
             return
         }
 
-        blogsRepository.deleteBlog(req.params.id)
+        await blogsRepository.deleteBlog(req.params.id)
 
         res.sendStatus(204)
     })
 
 
-deleteAllBlogsRouter.delete('/all-data', (req: Request, res: Response): void => {
-    blogsRepository.deleteAllBD()
+deleteAllBlogsRouter.delete('/all-data', async (req: Request, res: Response): Promise<void> => {
+    await blogsRepository.deleteAllBD()
     res.sendStatus(204)
 })
