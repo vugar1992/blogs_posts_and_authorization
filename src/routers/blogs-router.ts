@@ -1,9 +1,11 @@
 import {Router, Request, Response} from "express";
 import {blogsRepository} from "../repository/blogs-repository";
-import {createValidator} from "../validator/blogs-validator";
+import {checkObjectId, createValidator} from "../validator/blogs-validator";
 import {IdbBlogs} from "../db/DBBlogsType";
 import {authorizationMiddleware} from "../middleware/basic-auth";
 import {inputValidationResultMiddleware} from "../middleware/errors-type";
+import {ObjectId} from "mongodb";
+import {param} from "express-validator";
 
 
 export const blogsRouter: Router = Router({})
@@ -38,9 +40,11 @@ blogsRouter.post('/',
     })
 
 blogsRouter.get('/:id',
+    // checkObjectId,
+    inputValidationResultMiddleware,
     async (req: Request, res: Response): Promise<void> => {
 
-        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(new ObjectId(req.params.id))
 
         if (!blog) {
             res.sendStatus(404)
@@ -62,7 +66,7 @@ blogsRouter.put('/:id',
             websiteUrl: req.body.websiteUrl
         }
 
-        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(new ObjectId(req.params._id))
 
         if (!blog) {
             res.sendStatus(404)
@@ -80,7 +84,7 @@ blogsRouter.delete('/:id',
     authorizationMiddleware,
     async (req: Request, res: Response): Promise<void> => {
 
-        const blog: IdbBlogs | null = await blogsRepository.getBlogById(req.params.id)
+        const blog: IdbBlogs | null = await blogsRepository.getBlogById(new ObjectId(req.params._id))
 
         if (!blog) {
             res.sendStatus(404)

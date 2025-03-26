@@ -34,7 +34,7 @@ postRouter.post(
             content: req.body.content,
             blogId: req.body.blogId,
         };
-
+        //@ts-ignore
         const blog: IdbBlogs | null = blogsRepository.getBlogById(createData.blogId) ?? null
 
         if (!blog) {
@@ -69,7 +69,7 @@ postRouter.put("/:id",
             content: req.body.content,
             blogId: req.body.blogId,
         };
-
+        //@ts-ignore
         const blog: IdbBlogs | null = blogsRepository.getBlogById(updateData.blogId) ?? null
         const post: IdbPosts | null = postsRepository.getPostById(req.params.id);
 

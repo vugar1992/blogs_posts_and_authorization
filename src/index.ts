@@ -7,6 +7,7 @@ const startApp = async () => {
     if(!res) process.exit(1)
 }
 
-app.listen(SETTINGS.PORT, () => {
+app.listen(SETTINGS.PORT, async () => {
+   await startApp()
     console.log('...server started in port ' + SETTINGS.PORT)
 })

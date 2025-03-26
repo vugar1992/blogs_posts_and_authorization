@@ -11,7 +11,7 @@ export const postsRepository = {
     createNewPosts(reqData: ReqInputType): IdbPosts | null {
         const {title, shortDescription, content, blogId} = reqData;
 
-
+        //@ts-ignore
         const findName: IdbBlogs | null = db.blogs.find(blog => blogId === blog.id) ?? null;
 
         if (!findName) {
@@ -40,7 +40,7 @@ export const postsRepository = {
 
     updatePost(reqData: ReqInputType, id: string): void {
         const {title, shortDescription, content, blogId} = reqData;
-
+        //@ts-ignore
         const blog: IdbBlogs | null = db.blogs.find((blog: IdbBlogs): boolean => blog.id === blogId) ?? null;
 
         const index: number = db.posts.findIndex((post: IdbPosts): boolean => post.id === id);

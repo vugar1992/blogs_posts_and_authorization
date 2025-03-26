@@ -14,10 +14,9 @@ export const blogsRepository = {
     async createNewBlog(data: BlogsInput): Promise<ObjectId> {
 
         const {name, description, websiteUrl} = data;
-        const _id:ObjectId = new ObjectId();
+
 
         const blog: IdbBlogs = {
-            _id,
             name,
             description,
             websiteUrl
@@ -28,15 +27,15 @@ export const blogsRepository = {
         return db.insertedId;
     },
 
-    async getBlogById(id: string): Promise<IdbBlogs | null> {
-        const index: number = db.blogs.findIndex((blog: IdbBlogs): boolean => blog.id === id)
+    async getBlogById(_id: object): Promise<IdbBlogs | null> {
+        const findId = await blogsCollection.findOne({_id})
 
-        return db.blogs[index] ?? null
+        return findId ?? null
     },
 
     async updateBlog(newData: BlogsInput, id: string): Promise<void> {
         const {name, description, websiteUrl} = newData
-
+        //@ts-ignore
         const index: number = db.blogs.findIndex((blog: IdbBlogs): boolean => blog.id === id);
 
         db.blogs[index] = {
@@ -49,6 +48,7 @@ export const blogsRepository = {
     },
 
     async deleteBlog(id: string): Promise<void> {
+        //@ts-ignore
         db.blogs = db.blogs.filter((blog: IdbBlogs): boolean => blog.id !== id)
     },
 

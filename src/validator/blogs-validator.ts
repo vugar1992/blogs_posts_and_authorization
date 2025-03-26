@@ -1,4 +1,4 @@
-import {body, ValidationChain} from "express-validator";
+import {body, param, ValidationChain} from "express-validator";
 
 
 const nameValidation:ValidationChain = body("name")
@@ -24,5 +24,8 @@ const websiteUrlValidation:ValidationChain = body("websiteUrl")
     .withMessage("The value length must be between 1 to 100")
     .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
     .withMessage("The value must be website url link")
+
+export const checkObjectId = param('id')
+    .isMongoId()
 
 export const createValidator = [nameValidation, descriptionValidation, websiteUrlValidation]
