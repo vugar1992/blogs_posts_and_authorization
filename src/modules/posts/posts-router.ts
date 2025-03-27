@@ -1,11 +1,11 @@
 import {Router, Request, Response} from "express";
-import {postsRepository} from "../repository/posts-repository";
-import {createValidation} from "../validator/posts-validator";
-import {IdbBlogs} from "../db/DBBlogsType";
-import {blogsRepository} from "../repository/blogs-repository";
-import {IdbPosts} from "../db/IdbPosts";
-import {authorizationMiddleware} from "../middleware/basic-auth";
-import {inputValidationResultMiddleware} from "../middleware/errors-type";
+import {postsRepository} from "./posts-repository";
+import {createValidation} from "../../validator/posts-validator";
+import {IdbBlogs} from "../../db/DBBlogsType";
+import {blogsRepository} from "../blogs/blogs-repository";
+import {IdbPosts} from "../../db/IdbPosts";
+import {authorizationMiddleware} from "../../middleware/basic-auth";
+import {inputValidationResultMiddleware} from "../../middleware/errors-type";
 
 export const postRouter: Router = Router({});
 export const deleteAllPostsRouter: Router = Router({})

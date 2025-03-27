@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { SETTINGS } from "./settings";
-import { blogsRouter, deleteAllBlogsRouter } from "./routers/blogs-router";
-import {deleteAllPostsRouter, postRouter} from "./routers/posts-router";
+import { blogsRouter, deleteAllBlogsRouter } from "./modules/blogs/blogs-router";
+import {deleteAllPostsRouter, postRouter} from "./modules/posts/posts-router";
 
 export const app = express();
 app.use(express.json());

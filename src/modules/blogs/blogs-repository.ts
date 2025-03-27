@@ -1,13 +1,13 @@
-import {db} from "../db/db";
-import {IdbBlogs} from "../db/DBBlogsType";
-import {BlogsInput} from "../routers/blogs-router";
-import {blogsCollection} from "../db/mongoDB"
+import {db} from "../../db/db";
+import {IdbBlogs} from "../../db/DBBlogsType";
+import {blogsCollection} from "../../db/mongoDB"
 import {ObjectId} from "mongodb"
+import {BlogsInput} from "./blogs-controller";
 
 
 export const blogsRepository = {
 
-    async getAllBlogs(): Promise<IdbBlogs[]> {
+    async getBlogs(): Promise<IdbBlogs[]> {
         return blogsCollection.find({}).toArray()
     },
 
@@ -22,7 +22,6 @@ export const blogsRepository = {
             websiteUrl
         }
 
-        // db.blogs.push(blog)
         const db = await blogsCollection.insertOne(blog);
         return db.insertedId;
     },
@@ -33,23 +32,25 @@ export const blogsRepository = {
         return findId ?? null
     },
 
-    async updateBlog(newData: BlogsInput, id: string): Promise<void> {
+    async updateBlog(newData: BlogsInput, id: ObjectId): Promise<void> {
         const {name, description, websiteUrl} = newData
-        //@ts-ignore
-        const index: number = db.blogs.findIndex((blog: IdbBlogs): boolean => blog.id === id);
 
-        db.blogs[index] = {
-            ...db.blogs[index],
-            name,
-            description,
-            websiteUrl
+        const filter = { _id: id }
+
+        const updateField = {
+            $set: {
+                name,
+                description,
+                websiteUrl
+            }
         }
 
+        await blogsCollection.updateOne(filter, updateField)
     },
 
-    async deleteBlog(id: string): Promise<void> {
-        //@ts-ignore
-        db.blogs = db.blogs.filter((blog: IdbBlogs): boolean => blog.id !== id)
+    async deleteBlog(id: ObjectId): Promise<void> {
+
+        await blogsCollection.deleteOne({_id: id})
     },
 
     async deleteAllBD() {

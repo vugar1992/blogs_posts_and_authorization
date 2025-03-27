@@ -27,5 +27,6 @@ const websiteUrlValidation:ValidationChain = body("websiteUrl")
 
 export const checkObjectId = param('id')
     .isMongoId()
+    .withMessage("Id must be a ObjectId")
 
 export const createValidator = [nameValidation, descriptionValidation, websiteUrlValidation]

@@ -1,6 +1,6 @@
 import {app} from "../src/app";
 import request from "supertest";
-import {BlogsInput} from "../src/routers/blogs-router";
+import {BlogsInput} from "../src/modules/blogs/blogs-router";
 
 describe("Create and update posts", () => {
     beforeAll(async () => {

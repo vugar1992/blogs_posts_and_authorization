@@ -1,7 +1,7 @@
-import {db} from "../db/db";
-import {IdbBlogs} from "../db/DBBlogsType";
-import {ReqInputType} from "../routers/posts-router";
-import {IdbPosts} from "../db/IdbPosts";
+import {db} from "../../db/db";
+import {IdbBlogs} from "../../db/DBBlogsType";
+import {ReqInputType} from "./posts-router";
+import {IdbPosts} from "../../db/IdbPosts";
 
 export const postsRepository = {
     getAllPosts() {
